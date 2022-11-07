@@ -28,3 +28,12 @@ steps:
       command: 'publish'
       publishWebProjects: true
       configuration: release
+  - task: Npm@1
+    inputs:
+      command: 'install'
+      workingDir: '/Client'
+  - task: Npm@1
+    inputs:
+      command: 'custom'
+      customCommand: 'run build'
+      workingDir: '/Client'
