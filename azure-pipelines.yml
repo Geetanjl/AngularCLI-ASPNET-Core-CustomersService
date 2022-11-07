@@ -8,11 +8,14 @@ steps:
   - checkout: self
     clean: true
   - task: DotNetCoreCLI@2
+    displayName: 'restore .net'
     inputs:
       command: 'restore'
       projects: '**/*.csproj'
       feedsToUse: 'select'
+
   - task: DotNetCoreCLI@2
+    displayName: 'build .net'
     inputs:
       command: 'build'
       projects: '**/*.csproj'
