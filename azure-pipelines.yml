@@ -43,14 +43,16 @@ steps:
       publishLocation: 'Container'
 
   - task: Npm@1
+    displayName: 'npm install'
     inputs:
       command: 'install'
       workingDir: 'Client'
   - task: Npm@1
+    displayName: 'npm run and build'
     inputs:
       command: 'custom'
       customCommand: 'run build'
-      workingDir: 'Client'
+      workingDir: 'Client' 
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.SourcesDirectory)/wwwroot'
