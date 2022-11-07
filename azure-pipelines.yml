@@ -38,3 +38,8 @@ steps:
       command: 'custom'
       customCommand: 'run build'
       workingDir: 'Client'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/wwwroot'
+      ArtifactName: 'wwwroot'
+      publishLocation: 'Container'
