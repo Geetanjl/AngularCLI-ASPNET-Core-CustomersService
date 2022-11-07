@@ -28,6 +28,11 @@ steps:
       command: 'publish'
       publishWebProjects: true
       configuration: release
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.SourcesDirectory)/bin/Debug/netcoreapp5.0/publish'
+      ArtifactName: 'Backend'
+      publishLocation: 'Container'
 
   - task: Npm@1
     inputs:
