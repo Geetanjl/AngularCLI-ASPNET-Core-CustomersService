@@ -30,7 +30,7 @@ steps:
       configuration: release
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/bin/Debug/netcoreapp5.0/publish'
+      PathtoPublish: '$(Build.SourcesDirectory)/bin/Release/netcoreapp5.0/publish'
       ArtifactName: 'Backend'
       publishLocation: 'Container'
 
