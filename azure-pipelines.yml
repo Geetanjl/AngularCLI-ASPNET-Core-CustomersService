@@ -28,21 +28,13 @@ steps:
       command: 'publish'
       publishWebProjects: true
       configuration: release
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: 'pwd'
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: 'ls'
-  
+
   - task: Npm@1
     inputs:
       command: 'install'
-      workingDir: '/AngularCLI-ASPNET-Core-CustomersService/Client'
+      workingDir: 'Client'
   - task: Npm@1
     inputs:
       command: 'custom'
       customCommand: 'run build'
-      workingDir: '/AngularCLI-ASPNET-Core-CustomersService/Client'
+      workingDir: 'Client'
