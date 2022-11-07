@@ -40,6 +40,6 @@ steps:
       workingDir: 'Client'
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/wwwroot'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'wwwroot'
       publishLocation: 'Container'
