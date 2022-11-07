@@ -28,9 +28,17 @@ steps:
       command: 'publish'
       publishWebProjects: true
       configuration: release
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: 'pwd'
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: 'ls'
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/bin/Release/netcoreapp5.0'
+      PathtoPublish: '$(Build.SourcesDirectory)/bin/Debug/netcoreapp5.0'
       ArtifactName: 'Backend'
       publishLocation: 'Container'
 
