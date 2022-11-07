@@ -31,9 +31,9 @@ steps:
   - task: Npm@1
     inputs:
       command: 'install'
-      workingDir: '\AngularCLI-ASPNET-Core-CustomersService\Client'
+      workingDir: '/AngularCLI-ASPNET-Core-CustomersService/Client'
   - task: Npm@1
     inputs:
       command: 'custom'
       customCommand: 'run build'
-      workingDir: '\AngularCLI-ASPNET-Core-CustomersService\Client'
+      workingDir: '/AngularCLI-ASPNET-Core-CustomersService/Client'
