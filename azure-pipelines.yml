@@ -44,7 +44,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'publish artifact frontend'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/wwwroot'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/Client/src'
     ArtifactName: 'Frontend'
     publishLocation: 'Container'
 - task: DownloadBuildArtifacts@1
