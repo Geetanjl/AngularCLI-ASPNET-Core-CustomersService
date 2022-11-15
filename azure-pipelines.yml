@@ -2,59 +2,36 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
-
+  vmImage: windows-latest
 steps:
-  - checkout: self
-    clean: true
-  - task: DotNetCoreCLI@2
-    displayName: 'restore .net'
-    inputs:
-      command: 'restore'
-      projects: '**/*.csproj'
-      feedsToUse: 'select'
-      configuration: release
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: 
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    command: 'install'
+    workingDir: 'Client'
+- task: Npm@1
+  displayName: 'run and build'
+  inputs:
+    command: 'custom'
+    workingDir: 'Client'
+    customCommand: 'run build'
+- task: DotNetCoreCLI@2
+  displayName: '.net restore'
+  inputs:
+    command: 'restore'
+    projects: 'Angular_ASPNETCore_CustomersService.sln'
+    feedsToUse: 'select'
+- task: DotNetCoreCLI@2
+  displayName: '.net build'
+  inputs:
+    command: 'build'
+    projects: 'Angular_ASPNETCore_CustomersService.sln'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'build .net'
-    inputs:
-      command: 'build'
-      projects: '**/*.csproj'
-      configuration: release
 
-  - task: DotNetCoreCLI@2
-    displayName: 'publish .net'
-    inputs:
-      command: 'publish'
-      publishWebProjects: true
-      configuration: release
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: 'pwd'
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: 'ls'
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/bin/Debug/netcoreapp5.0'
-      ArtifactName: 'Backend'
-      publishLocation: 'Container'
 
-  - task: Npm@1
-    displayName: 'npm install'
-    inputs:
-      command: 'install'
-      workingDir: 'Client'
-  - task: Npm@1
-    displayName: 'npm run and build'
-    inputs:
-      command: 'custom'
-      customCommand: 'run build'
-      workingDir: 'Client' 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.SourcesDirectory)/wwwroot'
-      ArtifactName: 'wwwroot'
-      publishLocation: 'Container'
+
+
