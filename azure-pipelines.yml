@@ -30,8 +30,33 @@ steps:
   inputs:
     command: 'build'
     projects: 'Angular_ASPNETCore_CustomersService.sln'
-
-
-
-
+- task: DotNetCoreCLI@2
+  displayName: '.net publish'
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+- task: PublishBuildArtifacts@1
+  displayName: 'publish artifact backend'
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)/bin/Debug/netcoreapp5.0'
+    ArtifactName: 'Backend'
+    publishLocation: 'Container'
+- task: PublishBuildArtifacts@1
+  displayName: 'publish artifact frontend'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/wwwroot'
+    ArtifactName: 'Frontend'
+    publishLocation: 'Container'
+- task: DownloadBuildArtifacts@1
+  inputs:
+    buildType: 'current'
+    downloadType: 'single'
+    artifactName: 'Backend'
+    downloadPath: '$(System.ArtifactsDirectory)'
+- task: DownloadBuildArtifacts@1
+  inputs:
+    buildType: 'current'
+    downloadType: 'single'
+    artifactName: 'Frontend'
+    downloadPath: '$(System.ArtifactsDirectory)'
 
