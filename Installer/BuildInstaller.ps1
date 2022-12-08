@@ -21,10 +21,10 @@ $BuildSrcDir= $Env:BUILD_SOURCESDIRECTORY
 $BuildSrcDir="C:\dev\tools\agent\_work\4\s"
 "Build Source directory is $BuildSrcDir"
 $ISCmdBld= '"C:\Program Files (x86)\InstallShield\2022\System\IsCmdBld.exe"'
-$Path_2_ISM="$BuildSrcDir"+"\Installer\Coustmer Service.ism"
+$Path_2_ISM="$BuildSrcDir"+"\Installer\CoustmerService.ism"
 "Path 2 ism is $Path_2_ism"
 
-$setupPath=$BuildSrcDir +"\Installer\Coustmer Service\PROJECT_ASSISTANT\SINGLE_EXE_IMAGE\DiskImages\DISK1\CustomerService.exe"
+$setupPath=$BuildSrcDir +"\Installer\CoustmerService\PROJECT_ASSISTANT\SINGLE_EXE_IMAGE\DiskImages\DISK1\CustomerService.exe"
 "setup path is $setupPath"
 
 #$OutFile="BldInstaller.out"
