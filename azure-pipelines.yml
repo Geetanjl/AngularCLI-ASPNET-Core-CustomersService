@@ -1,5 +1,7 @@
 trigger:
 - master
+variables: 
+  CustomerServiceSetup: $(Build.SourcesDirectory)\Installer
 
 pool:
   name: Default
@@ -59,4 +61,31 @@ steps:
     downloadType: 'single'
     artifactName: 'Frontend'
     downloadPath: '$(System.ArtifactsDirectory)'
-
+- task: DownloadPipelineArtifact@2
+  enabled: false
+  displayName: 'download pipeline artifacts'
+  inputs:
+    buildType: 'current'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+- task: PowerShell@2
+  displayName: 'Build AgentEx Installer'
+  inputs:
+    targetType: filePath
+    filePath: ./Installer/BuildInstaller.ps1
+    failOnStderr: true
+    workingDirectory: '$(Build.SourcesDirectory)'
+- task: CopyFiles@2
+  displayName: 'Copy Installer to ArtifactsStaging'
+  inputs:
+    SourceFolder: '$(CustomerServiceSetup)'
+    Contents: |
+      CustomerService_Setup_*.exe
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\.'
+    CleanTargetFolder: true
+    OverWrite: true
+- task: PublishBuildArtifacts@1
+  enabled: true
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'CustomerServiceSetup'
+    publishLocation: 'Container'
