@@ -3,89 +3,107 @@ trigger:
 variables: 
   CustomerServiceSetup: $(Build.SourcesDirectory)\Installer
 
-pool:
-  name: Default
-steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: 
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    command: 'install'
-    workingDir: 'Client'
-- task: Npm@1
-  displayName: 'run and build'
-  inputs:
-    command: 'custom'
-    workingDir: 'Client'
-    customCommand: 'run build'
-- task: DotNetCoreCLI@2
-  displayName: '.net restore'
-  inputs:
-    command: 'restore'
-    projects: 'Angular_ASPNETCore_CustomersService.sln'
-    feedsToUse: 'select'
-- task: DotNetCoreCLI@2
-  displayName: '.net build'
-  inputs:
-    command: 'build'
-    projects: 'Angular_ASPNETCore_CustomersService.sln'
-- task: DotNetCoreCLI@2
-  displayName: '.net publish'
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-- task: PublishBuildArtifacts@1
-  displayName: 'publish artifact backend'
-  inputs:
-    PathtoPublish: '$(Build.SourcesDirectory)/bin/Debug/netcoreapp5.0'
-    ArtifactName: 'Backend'
-    publishLocation: 'Container'
-- task: PublishBuildArtifacts@1
-  displayName: 'publish artifact frontend'
-  inputs:
-    PathtoPublish: '$(Build.SourcesDirectory)/wwwroot'
-    ArtifactName: 'Frontend'
-    publishLocation: 'Container'
-- task: DownloadBuildArtifacts@1
-  inputs:
-    buildType: 'current'
-    downloadType: 'single'
-    artifactName: 'Backend'
-    downloadPath: '$(System.ArtifactsDirectory)'
-- task: DownloadBuildArtifacts@1
-  inputs:
-    buildType: 'current'
-    downloadType: 'single'
-    artifactName: 'Frontend'
-    downloadPath: '$(System.ArtifactsDirectory)'
-- task: DownloadPipelineArtifact@2
-  enabled: false
-  displayName: 'download pipeline artifacts'
-  inputs:
-    buildType: 'current'
-    targetPath: '$(Build.ArtifactStagingDirectory)'
-- task: PowerShell@2
-  displayName: 'Build AgentEx Installer'
-  inputs:
-    targetType: filePath
-    filePath: ./Installer/BuildInstaller.ps1
-    failOnStderr: true
-    workingDirectory: '$(Build.SourcesDirectory)'
-- task: CopyFiles@2
-  displayName: 'Copy Installer to ArtifactsStaging'
-  inputs:
-    SourceFolder: '$(CustomerServiceSetup)'
-    Contents: |
-      CustomerService_Setup_*.exe
-    TargetFolder: '$(Build.ArtifactStagingDirectory)\.'
-    CleanTargetFolder: true
-    OverWrite: true
-- task: PublishBuildArtifacts@1
-  enabled: true
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'CustomerServiceSetup'
-    publishLocation: 'Container'
+stages:
+- stage: 
+  pool:
+    vmImage: windows-latest
+  jobs:
+  - job: backend_build
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: 
+
+    - task: DotNetCoreCLI@2
+      displayName: '.net restore'
+      inputs:
+        command: 'restore'
+        projects: 'Angular_ASPNETCore_CustomersService.sln'
+        feedsToUse: 'select'
+    - task: DotNetCoreCLI@2
+      displayName: '.net build'
+      inputs:
+        command: 'build'
+        projects: 'Angular_ASPNETCore_CustomersService.sln'
+    - task: DotNetCoreCLI@2
+      displayName: '.net publish'
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+    - task: PublishBuildArtifacts@1
+      displayName: 'publish artifact backend'
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)/bin/Debug/netcoreapp5.0'
+        ArtifactName: 'Backend'
+        publishLocation: 'Container'
+- stage:
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+  - job: frontend_build
+    steps:
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        command: 'install'
+        workingDir: 'Client'
+    - task: Npm@1
+      displayName: 'run and build'
+      inputs:
+        command: 'custom'
+        workingDir: 'Client'
+        customCommand: 'run build'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'publish artifact frontend'
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)/wwwroot'
+        ArtifactName: 'Frontend'
+        publishLocation: 'Container'
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'Backend'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'Frontend'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: DownloadPipelineArtifact@2
+      enabled: false
+      displayName: 'download pipeline artifacts'
+      inputs:
+        buildType: 'current'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+#- stage:
+#  pool:
+#    vmImage: VSC
+#  jobs:
+#  - job: Build_Installer
+#    steps:
+#    - task: PowerShell@2
+#      displayName: 'Build AgentEx Installer'
+#      inputs:
+#        targetType: filePath
+#        filePath: ./Installer/BuildInstaller.ps1
+#        failOnStderr: true
+#        workingDirectory: '$(Build.SourcesDirectory)'
+#    - task: CopyFiles@2
+#      displayName: 'Copy Installer to ArtifactsStaging'
+#      inputs:
+#        SourceFolder: '$(CustomerServiceSetup)'
+#        Contents: |
+#          CustomerService_Setup_*.exe
+#        TargetFolder: '$(Build.ArtifactStagingDirectory)\.'
+#       CleanTargetFolder: true
+#        OverWrite: true
+#    - task: PublishBuildArtifacts@1
+#      enabled: true
+#      inputs:
+#        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#        ArtifactName: 'CustomerServiceSetup'
+#        publishLocation: 'Container'
